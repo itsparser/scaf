@@ -1,19 +1,21 @@
-name: Build and Release Artifacts
+# .github/workflows/release.yml
+name: Build and Store Artifacts
 
 on:
-  release:
-    types: [created]  # Trigger when a new release is created
-  workflow_dispatch:  # Allows manual triggering from the GitHub UI
+  push:
+    tags:
+      - 'v*.*.*'   # Trigger the workflow only when a version tag (e.g., v1.0.0) is pushed
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build and Upload for ${{ matrix.os }} ${{ matrix.arch }}
+    name: Build for ${{ matrix.os }} ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        arch: [x86_64, arm64]  # You can add more architectures like aarch64 if needed
+        arch: [x86_64, arm64]
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
@@ -50,10 +52,42 @@ jobs:
           mkdir -p artifacts
           powershell Compress-Archive -Path target\${{ matrix.target }}\release\scaf.exe -DestinationPath artifacts\scaf-${{ matrix.os }}-${{ matrix.arch }}.zip
 
-      - name: Upload Artifacts to GitHub Release
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: scaf-${{ matrix.os }}-${{ matrix.arch }}
+          path: artifacts/*
+
+  release:
+    name: Upload Artifacts to GitHub Release
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ github.event.release.upload_url }}  # Reference the upload URL provided by the release event
-          asset_path: artifacts/*
-          asset_name: scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
-          label: "scaf-${{ matrix.os }}-${{ matrix.arch }}"
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./artifacts/scaf-${{ matrix.os }}-${{ matrix.arch }}.*
+          asset_name: scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ endswith('windows-latest', matrix.os) && 'zip' || 'tar.gz' }}
+          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
