@@ -2,12 +2,12 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-const installSteps = [
-  { step: 1, command: "git clone https://github.com/itsparser/scaf" },
-  // { step: 2, command: "cd scaf" },
-  // { step: 3, command: "cargo build --release" },
-  // { step: 4, command: "./target/release/scaf" }
-]
+// const installSteps = [
+//   { step: 1, command: "git clone https://github.com/itsparser/scaf" },
+//   // { step: 2, command: "cd scaf" },
+//   // { step: 3, command: "cargo build --release" },
+//   // { step: 4, command: "./target/release/scaf" }
+// ]
 const installCommand = "git clone https://github.com/itsparser/scaf"
 
 export default function Installation() {

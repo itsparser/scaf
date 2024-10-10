@@ -2,7 +2,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { MultiSelect, OptionType } from "@/components/ui/multi-select"
+import { MultiSelect } from "@/components/ui/multi-select"
 
 const frameworks = [
   { value: "react", label: "React" },
@@ -23,12 +23,12 @@ const bundlers = [
   { value: "poetry", label: "Poetry" },
 ]
 
-const libraryOptions: OptionType[] = [
+const libraryOptions = [
   { value: "tailwind", label: "Tailwind CSS" },
   { value: "shadcn", label: "shadcn/ui" },
 ]
 
-const preCommitOptions: OptionType[] = [
+const preCommitOptions = [
   { value: "lint", label: "Lint" },
   { value: "passleak", label: "Passleak" },
   { value: "prettier", label: "Prettier" },
