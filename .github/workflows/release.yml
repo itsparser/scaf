@@ -62,7 +62,7 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ github.event.release.upload_url }}  # Reference the upload URL provided by the release event
-          asset_path: artifacts/*
+          asset_path: artifacts/scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
           asset_name: scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
           label: "scaf-${{ matrix.os }}-${{ matrix.arch }}"
           asset_content_type: application/octet-stream
