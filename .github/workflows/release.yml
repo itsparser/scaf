@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: x86_64-unknown-linux-gnu
+
+      - name: Build project
+        run: cargo build --release
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: scaf-cli
+          path: target/release/scaf
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/release/scaf
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

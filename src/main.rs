@@ -9,7 +9,7 @@ pub(crate) mod cmd;
 mod error;
 mod logger;
 
-mod options;
+mod master;
 
 fn main() -> Result<(), Error> {
     logger::init(); // Initialize logger
