@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        arch: [x86_64]  # Include more architectures if needed  aarch64, arm64
+        arch: [x86_64, aarch64]  # Include more architectures if needed
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
@@ -40,8 +40,18 @@ jobs:
           toolchain: stable
           override: true
 
+      - name: Install Cross-Compilation Toolchain (Linux Only)
+        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'aarch64'
+        run: sudo apt-get update && sudo apt-get install -y gcc-aarch64-linux-gnu
+
       - name: Install Rust target for ${{ matrix.arch }}
         run: rustup target add ${{ matrix.target }}
+
+      - name: Set Cargo Linker (for Cross-Compilation)
+        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'aarch64'
+        run: |
+          echo '[target.${{ matrix.target }}]' >> ~/.cargo/config
+          echo 'linker = "aarch64-linux-gnu-gcc"' >> ~/.cargo/config
 
       - name: Build Release
         run: cargo build --release --target ${{ matrix.target }}
@@ -50,13 +60,13 @@ jobs:
         if: matrix.os != 'windows-latest'
         run: |
           mkdir -p artifacts
-          tar -czvf artifacts/scaf-${{ matrix.os }}-${{ matrix.arch }}.tar.gz -C target/${{ matrix.target }}/release scaf
+          tar -czvf artifacts/scaf-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release scaf
 
       - name: Create Zip File for Windows
         if: matrix.os == 'windows-latest'
         run: |
           mkdir -p artifacts
-          powershell Compress-Archive -Path target\${{ matrix.target }}\release\scaf.exe -DestinationPath artifacts\scaf-${{ matrix.os }}-${{ matrix.arch }}.zip
+          powershell Compress-Archive -Path target\${{ matrix.target }}\release\scaf.exe -DestinationPath artifacts\scaf-${{ matrix.target }}.zip
 
       - name: Upload Artifacts to GitHub Release
         uses: actions/upload-release-asset@v1
@@ -64,6 +74,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}  # Reference the upload URL provided by the release event
-          asset_path: artifacts/scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
-          asset_name: scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
+          asset_path: artifacts/scaf-${{ matrix.target }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
+          asset_name: scaf-${{ matrix.target }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
           asset_content_type: application/octet-stream
