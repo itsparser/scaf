@@ -1,0 +1,59 @@
+name: Build and Release Artifacts
+
+on:
+  release:
+    types: [created]  # Trigger when a new release is created
+  workflow_dispatch:  # Allows manual triggering from the GitHub UI
+
+jobs:
+  build:
+    name: Build and Upload for ${{ matrix.os }} ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        arch: [x86_64, arm64]  # You can add more architectures like aarch64 if needed
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: windows-latest
+            target: x86_64-pc-windows-gnu
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install Rust target for ${{ matrix.arch }}
+        run: rustup target add ${{ matrix.target }}
+
+      - name: Build Release
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Create Tarball for Linux and macOS
+        if: matrix.os != 'windows-latest'
+        run: |
+          mkdir -p artifacts
+          tar -czvf artifacts/scaf-${{ matrix.os }}-${{ matrix.arch }}.tar.gz -C target/${{ matrix.target }}/release scaf
+
+      - name: Create Zip File for Windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          mkdir -p artifacts
+          powershell Compress-Archive -Path target\${{ matrix.target }}\release\scaf.exe -DestinationPath artifacts\scaf-${{ matrix.os }}-${{ matrix.arch }}.zip
+
+      - name: Upload Artifacts to GitHub Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}  # Reference the upload URL provided by the release event
+          asset_path: artifacts/*
+          asset_name: scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
+          label: "scaf-${{ matrix.os }}-${{ matrix.arch }}"
