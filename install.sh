@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Variables
 REPO="itsparser/scaf"  # Your GitHub repository
 VERSION="latest"  # Use 'latest' for the latest version or specify a version tag like 'v1.0.0'
@@ -22,7 +20,7 @@ case "$OS" in
         OS="windows"
         ;;
     *)
-        echo "Unsupported OS: $OS"
+        echo -e "\033[0;31mUnsupported OS: $OS\033[0m"
         exit 1
         ;;
 esac
@@ -36,10 +34,10 @@ case "$ARCH" in
         ARCH="aarch64"
         ;;
     arm64)
-        ARCH="arm64"
+        ARCH="x86_64"
         ;;
     *)
-        echo "Unsupported architecture: $ARCH"
+        echo -e "\033[0;31mUnsupported architecture: $ARCH\033[0m"
         exit 1
         ;;
 esac
@@ -58,7 +56,7 @@ if [ "$VERSION" == "latest" ]; then
 fi
 
 # Download URL for the artifact
-ARTIFACT_URL="https://github.com/$REPO/releases/download/$VERSION/scaf-${OS}-${ARCH}.${FILE_EXT}"
+ARTIFACT_URL="https://github.com/$REPO/releases/download/$VERSION/scaf-${OS}-latest-${ARCH}.${FILE_EXT}"
 
 # Download the artifact
 echo "Downloading $ARTIFACT_URL ..."
@@ -83,8 +81,8 @@ rm -rf "$TMP_DIR"
 
 # Verify installation
 if command -v scaf &> /dev/null; then
-    echo "scaf successfully installed!"
+    echo "🎉 scaf successfully installed! 🎉"
 else
-    echo "Installation failed. Please check your installation directory and permissions."
+    echo -e "\033[0;31mInstallation failed. Please check your installation directory and permissions.\033[0m"
     exit 1
 fi
