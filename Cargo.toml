@@ -1,0 +1,40 @@
+[package]
+name = "scaf"
+description = "Scaffold any new project with all the prerequsits"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.5.19", features = ["derive", "env", "wrap_help", "cargo"] }
+colored = "2.1.0"
+
+log = "0.4.22"
+fern = { version = "0.6", features = ["colored", ] }
+
+env_logger = "=0.10.2"
+indicatif = "0.17.8"
+lazy_static = "1.5.0"
+thiserror = "1.0.64"
+git2 = "0.19.0"
+config = "0.14.0"
+regex = "1.11.0"
+semver = "1.0.23"
+reqwest = "0.12.8"
+url = "2.5.2"
+serde = { version = "1.0.210", features = ["derive"] }
+serde_yaml = "0.9"
+serde-untagged = { version = "0.1.6" }
+serde_json = { version = "1.0.128" }
+anyhow = "1.0.89"
+
+toml = { version = "0.8.19" }
+toml_edit = { version = "0.22.21", features = ["serde"] }
+tracing = { version = "0.1.40" }
+tracing-durations-export = { version = "0.3.0", features = ["plot"] }
+tracing-subscriber = { version = "0.3.18", features = ["env-filter", "json", "registry"] }
+tracing-tree = { version = "0.4.0" }
+jiff = { version = "0.1.13", features = ["serde"] }
+anstream = { version = "0.6.15" }
+ansi_term = "0.12.1"
+humantime = "2.1.0"
+chrono = "0.4.38"
