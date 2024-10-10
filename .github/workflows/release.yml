@@ -2,10 +2,15 @@
 name: Build and Release Artifacts
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'   # Trigger the workflow only when a version tag (e.g., v1.0.0) is pushed
+#  push:
+#    tags:
+#      - 'v*.*.*'   # Trigger the workflow only when a version tag (e.g., v1.0.0) is pushed
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'The tag name for the release'
+        required: true
+        default: 'v0.1.0'
 
 jobs:
   build_and_release:
