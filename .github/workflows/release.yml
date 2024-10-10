@@ -9,18 +9,22 @@ on:
 
 jobs:
   build:
-    name: Build for ${{ matrix.os }} ${{ matrix.arch }}
+    name: Build and Upload for ${{ matrix.os }} ${{ matrix.arch }}
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        arch: [x86_64, arm64]  # You can add more architectures like aarch64 if needed
+        arch: [x86_64, aarch64, arm64]
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-gnu
           - os: macos-latest
             target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
           - os: windows-latest
             target: x86_64-pc-windows-gnu
 
@@ -52,8 +56,11 @@ jobs:
           mkdir -p artifacts
           powershell Compress-Archive -Path target\${{ matrix.target }}\release\scaf.exe -DestinationPath artifacts\scaf-${{ matrix.os }}-${{ matrix.arch }}.zip
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload Artifacts to GitHub Release
+        uses: actions/upload-release-asset@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: scaf-${{ matrix.os }}-${{ matrix.arch }}
-          path: artifacts/*
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: artifacts/*
+          asset_name: scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
+          label: "scaf-${{ matrix.os }}-${{ matrix.arch }}"
