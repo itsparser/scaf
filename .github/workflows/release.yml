@@ -1,6 +1,9 @@
 # .github/workflows/release.yml
 name: Build and Release Artifacts
 
+permissions:
+  contents: write
+
 on:
 #  push:
 #    tags:
@@ -70,6 +73,11 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./artifacts/scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ endswith('windows-latest', matrix.os) && 'zip' || 'tar.gz' }}
 
       - name: Upload Release Assets
         uses: actions/upload-release-asset@v1
