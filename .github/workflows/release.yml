@@ -57,6 +57,9 @@ jobs:
           mkdir -p artifacts
           powershell Compress-Archive -Path target\${{ matrix.target }}\release\scaf.exe -DestinationPath artifacts\scaf-${{ matrix.os }}-${{ matrix.arch }}.zip
 
+      - name: List artifacts directory
+        run: ls -la artifacts/
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
