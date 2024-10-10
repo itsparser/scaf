@@ -17,18 +17,10 @@
 
 ## 📥 Installation
 
-Ensure you have **Rust** and **Cargo** installed on your system. Clone the repository and build the project with Cargo:
+To install `scaf` on Linux, macOS, or Windows, use the following command:
 
-```sh
-$ git clone <repository-url>
-$ cd scaf
-$ cargo build --release
-```
-
-After building, you can run the executable using:
-
-```sh
-$ ./target/release/scaf
+```bash
+curl -sSL https://github.com/itsparser/scaf/raw/main/install.sh | bash
 ```
 
 ## 📘 Usage

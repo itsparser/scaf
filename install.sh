@@ -35,6 +35,9 @@ case "$ARCH" in
     aarch64)
         ARCH="aarch64"
         ;;
+    arm64)
+        ARCH="arm64"
+        ;;
     *)
         echo "Unsupported architecture: $ARCH"
         exit 1
@@ -51,7 +54,7 @@ fi
 # Construct the download URL for the artifact
 if [ "$VERSION" == "latest" ]; then
     # Get the latest version tag from GitHub API
-    VERSION=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
+    VERSION=$(curl --silent "https://api.github.com/repos/$REPO/releases/latest" | grep '"tag_name"' | sed -E 's/.*"tag_name": "([^"]+)".*/\1/')
 fi
 
 # Download URL for the artifact
