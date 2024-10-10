@@ -65,3 +65,4 @@ jobs:
           asset_path: artifacts/*
           asset_name: scaf-${{ matrix.os }}-${{ matrix.arch }}.${{ matrix.os == 'windows-latest' && 'zip' || 'tar.gz' }}
           label: "scaf-${{ matrix.os }}-${{ matrix.arch }}"
+          asset_content_type: application/octet-stream
