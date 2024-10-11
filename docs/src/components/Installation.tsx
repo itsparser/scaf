@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 //   // { step: 3, command: "cargo build --release" },
 //   // { step: 4, command: "./target/release/scaf" }
 // ]
-const installCommand = "git clone https://github.com/itsparser/scaf"
+const installCommand = "curl -sSL https://github.com/itsparser/scaf/raw/main/install.sh | bash"
 
 export default function Installation() {
   const [copiedIndex, setCopiedIndex] = useState<boolean>(false)
