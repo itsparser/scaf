@@ -2,12 +2,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-// const installSteps = [
-//   { step: 1, command: "git clone https://github.com/itsparser/scaf" },
-//   // { step: 2, command: "cd scaf" },
-//   // { step: 3, command: "cargo build --release" },
-//   // { step: 4, command: "./target/release/scaf" }
-// ]
 const installCommand = "curl -sSL https://github.com/itsparser/scaf/raw/main/install.sh | bash"
 
 export default function Installation() {
@@ -28,11 +22,8 @@ export default function Installation() {
             <CardTitle>Install Scaf</CardTitle>
           </CardHeader>
           <CardContent>
-            {/* <p className="mb-4">Follow these steps to install Scaf on your system:</p> */}
-            {/* {installSteps.map((step, index) => ( */}
               <div key={"index"} className="mb-4">
-                <p className="font-semibold mb-2"> 
-                  {/* {step.step}. {index === 0 ? "Clone the repository:" : index === 1 ? "Navigate to the project directory:" : index === 2 ? "Build the project with Cargo:" : "Run the executable:"} */}
+                <p className="font-semibold mb-2">
                 </p>
                 <div className="flex items-center bg-secondary p-2 rounded">
                   <code className="flex-grow">{installCommand}</code>
@@ -45,7 +36,6 @@ export default function Installation() {
                   </Button>
                 </div>
               </div>
-            {/* ))} */}
           </CardContent>
         </Card>
       </div>
