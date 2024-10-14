@@ -23,7 +23,7 @@ export default function Installation() {
     <section id="installation" className="py-20">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Installation</h2>
-        <Card className="max-w-2xl mx-auto">
+        <Card className="max-w-4xl mx-auto">
           <CardHeader>
             <CardTitle>Install Scaf</CardTitle>
           </CardHeader>
